@@ -77,7 +77,6 @@ int search_directory(const char *filepath, const struct stat *info,
 	time_t curtime_sec;
 	unsigned long diff_time;
     char *fname;
-    char logmsg[200];
 	int flen;
 
     fname = (char *)malloc(MAX_FILENAME);

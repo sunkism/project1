@@ -6,14 +6,16 @@ LD	= /usr/bin/ld
 MYHOME = ${HOME}/project1
 SRC_HOME = ${MYHOME}/src
 BIN_HOME = ${MYHOME}/bin
+INCLUDE  = -I.
 
-CFLAGS	= -Wall -std=c99 -g -D_XOPEN_SOURCE=600
+CFLAGS	= -Wall -std=c99 -g -D_XOPEN_SOURCE=600 $(INCLUDE)
 CPPFLAGS = -I.
 
 COMPILE.c = $(CC) -c
 COMPILE.cpp = $(CPP) -c
 
-SRCS = FileWatcher.c test.c
+HDRS = logger.h
+SRCS = FileWatcher.c logger.c
 OBJS = $(SRCS:%.c=%.o)
 TARGET = $(basename $(SRCS))
 
@@ -21,14 +23,13 @@ TARGET = $(basename $(SRCS))
 .c.o :
 	$(CC) $(CFLAGS) -c $< -o $@
 
-all : FileWatcher test
+all : FileWatcher
 
-FileWatcher : FileWatcher.o
-	$(CC) -o $@ $<
+FileWatcher : $(OBJS) 
+	$(CC) -o $@ $(OBJS)
 	mv -f $@ ../bin/
 
-test : test.o
-	$(CC) -o $@ $<
-	mv -f $@ ../bin/
+$(OBJS) : $(HDRS)
+
 clean:
 	rm -f *.o core
