@@ -13,21 +13,22 @@ CPPFLAGS = -I.
 COMPILE.c = $(CC) -c
 COMPILE.cpp = $(CPP) -c
 
-SRCS = dir_search.c test.c
+SRCS = FileWatcher.c test.c
 OBJS = $(SRCS:%.c=%.o)
 TARGET = $(basename $(SRCS))
 
-.SUFFIXES :
-%   : %.o
+#.SUFFIXES: .c .o
+.c.o :
+	$(CC) $(CFLAGS) -c $< -o $@
+
+all : FileWatcher test
+
+FileWatcher : FileWatcher.o
 	$(CC) -o $@ $<
+	mv -f $@ ../bin/
 
-all	: $(TARGET)
-
-%   : %.o
+test : test.o
 	$(CC) -o $@ $<
-%.o : %.c
-	$(CC) -c -o $@ $< $(CFLAGS)
-
-clean :
+	mv -f $@ ../bin/
+clean:
 	rm -f *.o core
-

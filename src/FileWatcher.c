@@ -6,6 +6,7 @@
 #include <errno.h>
 #include <time.h>
 #include <fcntl.h>
+#include "logger.h"
 
 //FILE DEPTH ???
 #ifndef USE_FDS
@@ -92,11 +93,10 @@ int search_directory(const char *filepath, const struct stat *info,
 			flen = get_fname(filepath,fname);
 			if(!strcmp(gs_watch_fname, fname))
 			{
-                memset(logmsg, 0x00, sizeof(logmsg));
-				sprintf(logmsg,"Error Message: %04d-%02d-%02d %02d:%02d:%02d %s is detected!\n",
+				log_prt(gs_logname,
+						"Error Message: %04d-%02d-%02d %02d:%02d:%02d %s is detected!\n",
 					mtime.tm_year+1900, mtime.tm_mon+1, mtime.tm_mday, 
 					mtime.tm_hour, mtime.tm_min, mtime.tm_sec,filepath);
-                write(gi_log_fd, logmsg, strlen(logmsg));
 				gi_detect_cnt++;
 			}
 		}
@@ -130,20 +130,14 @@ int main(int argc, char *argv[])
     int loop_cnt = 20;
     int ii=0;
 
-    gi_log_fd = open(gs_logname, O_RDWR | O_CREAT, 0644);
-    if(gi_log_fd < 0) 
-	{
-		printf("file open error [%s]\n", gs_logname);
-		return 0;
-	}
-    lseek(gi_log_fd,0,SEEK_END);
+	log_prt(gs_logname,"okletstest!!\n");
 
     if(get_option(argc, argv) == 0)
 	{
 		Usage();
 	}
-	printf("File Watcher Start \n");
-    printf("Watch Path: %s, File: %s\n",gs_watch_dname, gs_watch_fname);
+	log_prt(gs_logname,"File Watcher Start \n");
+    log_prt(gs_logname,"Watch Path: %s, File: %s\n",gs_watch_dname, gs_watch_fname);
     while(ii<loop_cnt)
 	{
 		gi_detect_cnt = 0;
@@ -151,13 +145,13 @@ int main(int argc, char *argv[])
 	
 		if(result !=0)
 		{
-			printf("error!!! %d\n", result);
+			log_prt(gs_logname,"error!!! %d\n", result);
 		    return result;
 		}
-		printf("phase%d : %d file/directory detected.\n",ii,gi_detect_cnt);
+		log_prt(gs_logname,"phase%d : %d file/directory detected.\n",ii,gi_detect_cnt);
 		sleep(DELAY_SEC);
 		ii++;
 	}
-	printf("File Watcher Stop\n");
+	log_prt(gs_logname,"File Watcher Stop\n");
 	return 0;
 }
