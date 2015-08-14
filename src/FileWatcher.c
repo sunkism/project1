@@ -93,7 +93,7 @@ int search_directory(const char *filepath, const struct stat *info,
 			if(!strcmp(gs_watch_fname, fname))
 			{
 				log_prt(gs_logname,
-						"Error Message: %04d-%02d-%02d %02d:%02d:%02d %s is detected!\n",
+						"Error Message: %04d-%02d-%02d %02d:%02d:%02d %s is detected!",
 					mtime.tm_year+1900, mtime.tm_mon+1, mtime.tm_mday, 
 					mtime.tm_hour, mtime.tm_min, mtime.tm_sec,filepath);
 				gi_detect_cnt++;
@@ -129,14 +129,15 @@ int main(int argc, char *argv[])
     int loop_cnt = 20;
     int ii=0;
 
-	log_prt(gs_logname,"okletstest!!\n");
-
     if(get_option(argc, argv) == 0)
 	{
 		Usage();
 	}
-	log_prt(gs_logname,"File Watcher Start \n");
-    log_prt(gs_logname,"Watch Path: %s, File: %s\n",gs_watch_dname, gs_watch_fname);
+	log_prt(gs_logname,"File Watcher Start");
+    log_prt(gs_logname,"Watch Path: %s, File: %s, Delay(sec): %d",
+			          gs_watch_dname, 
+					  gs_watch_fname,
+					  DELAY_SEC);
     while(ii<loop_cnt)
 	{
 		gi_detect_cnt = 0;
@@ -144,13 +145,13 @@ int main(int argc, char *argv[])
 	
 		if(result !=0)
 		{
-			log_prt(gs_logname,"error!!! %d\n", result);
+			log_prt(gs_logname,"error!!! %d", result);
 		    return result;
 		}
-		log_prt(gs_logname,"phase%d : %d file/directory detected.\n",ii,gi_detect_cnt);
+		log_prt(gs_logname,"phase%d : %d file/directory detected.",ii,gi_detect_cnt);
 		sleep(DELAY_SEC);
 		ii++;
 	}
-	log_prt(gs_logname,"File Watcher Stop\n");
+	log_prt(gs_logname,"File Watcher Stop");
 	return 0;
 }
